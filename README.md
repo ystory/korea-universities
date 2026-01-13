@@ -2,7 +2,7 @@
 
 ![NPM Version](https://img.shields.io/npm/v/korea-universities)
 ![License](https://img.shields.io/npm/l/korea-universities)
-![Build Status](https://github.com/ystory/korea-universities/actions/workflows/update-data.yml/badge.svg)
+![Build Status](https://github.com/ystory/korea-universities/actions/workflows/publish.yml/badge.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue)
 
 A comprehensive, zero-dependency TypeScript library that provides a list of South Korean universities combined with their **International Education Quality Assurance System (IEQAS)** accreditation status.
