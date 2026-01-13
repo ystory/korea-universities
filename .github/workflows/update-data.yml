@@ -1,0 +1,99 @@
+name: Update University Data
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  scrape-and-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install chromium --with-deps
+
+      - name: Run Scrapers
+        run: |
+          echo "🌐 Scraping general university list..."
+          pnpm run scrape
+          
+          echo "🛡️ Scraping accreditation data..."
+          pnpm run scrape:acc
+
+      - name: Build Final Data
+        run: |
+          echo "🔨 Merging and building final dataset..."
+          pnpm run build:data
+
+      - name: Format Code (Biome)
+        run: pnpm run format
+
+      - name: Run Tests
+        run: pnpm test
+
+      - name: Check for meaningful changes
+        id: git-check
+        run: |
+          if ! git diff --quiet src/data/universities-final.json; then
+            echo "✅ Core data changed. Proceeding to create PR."
+            echo "changes_exist=true" >> $GITHUB_OUTPUT
+          else
+            echo "🚫 No core data changes (only timestamps might have updated). Skipping PR."
+            echo "changes_exist=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.git-check.outputs.changes_exist == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(data): update university data and statistics"
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          signoff: false
+          branch: data/weekly-update
+          delete-branch: true
+          title: "chore(data): Weekly University Data Update"
+          body: |
+            ## 🔄 Weekly Data Update
+            
+            Scheduled update of university list and accreditation status.
+            
+            ### Changes
+            - Updated `src/data/universities.json` (Scraped list)
+            - Updated `src/data/accredited.json` (Accreditation source)
+            - Updated `src/data/universities-final.json` (Final compiled data)
+            - Updated `src/data/metadata.json` (Stats & timestamps)
+            
+            ### Verification
+            - [x] `pnpm run build:data` passed
+            - [x] `pnpm run format` passed
+            - [x] `pnpm test` passed
+            
+            Please review the changes and merge if everything looks correct.
+          labels: |
+            automated
+            data-update
