@@ -44,7 +44,13 @@ async function scrapeRaw() {
 	console.log("🚀 인증 대학 정보(Raw Data) 수집을 시작합니다...");
 
 	const browser = await chromium.launch({ headless: true });
-	const context = await browser.newContext();
+	const context = await browser.newContext({
+		userAgent:
+			"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+		locale: "ko-KR",
+		timezoneId: "Asia/Seoul",
+		viewport: { width: 1920, height: 1080 },
+	});
 	const page = await context.newPage();
 
 	try {
