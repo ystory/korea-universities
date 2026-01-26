@@ -1,15 +1,15 @@
 {
-  "builtAt": "2026-01-13T05:32:31.206Z",
-  "sourceLastModified": "2025-02-25",
-  "sources": [
-    "커리어넷 (career.go.kr)",
-    "한국유학종합시스템 (studyinkorea.go.kr)"
-  ],
-  "stats": {
-    "total": 491,
-    "university": 292,
-    "college": 184,
-    "graduate": 15,
-    "accredited": 199
-  }
+	"builtAt": "2026-01-26T01:17:53.699Z",
+	"sourceLastModified": "2025-02-25",
+	"sources": [
+		"커리어넷 (career.go.kr)",
+		"한국유학종합시스템 (studyinkorea.go.kr)"
+	],
+	"stats": {
+		"total": 491,
+		"university": 292,
+		"college": 184,
+		"graduate": 15,
+		"accredited": 199
+	}
 }
